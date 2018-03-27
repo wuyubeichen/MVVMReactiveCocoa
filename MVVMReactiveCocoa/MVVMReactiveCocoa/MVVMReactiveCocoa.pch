@@ -1,0 +1,43 @@
+//
+//  MVVMReactiveCocoa.pch
+//  MVVMReactiveCocoa
+//
+//  Created by zhoushuai on 16/3/9.
+//  Copyright © 2016年 zhoushuai. All rights reserved.
+//
+
+#ifndef MVVMReactiveCocoa_pch
+#define MVVMReactiveCocoa_pch
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+//获取本对象的弱引用
+#define WS(weakSelf)  __weak __typeof(&*self) weakSelf = self;
+
+//获取屏幕的大小
+#define  kDeviceWidth        [[UIScreen mainScreen] bounds].size.width
+#define  kDeviceHeight       [[UIScreen mainScreen] bounds].size.height
+
+
+//引用第三方
+#import <ReactiveObjC/ReactiveObjC.h>
+#import <MBProgressHUD/MBProgressHUD.h>
+#import "UIImageView+WebCache.h"
+#import <MJRefresh/MJRefresh.h>
+#import <YYModel/YYModel.h>
+
+
+
+#define NotificationName_RefreshMainVC @"NotificationName_RefreshMainVC"
+
+//引用自定义工具类
+#import "ZSCommonTools.h"
+#import "HttpRequestManager.h"
+
+
+
+
+
+
+#endif /* MVVMReactiveCocoa_pch */

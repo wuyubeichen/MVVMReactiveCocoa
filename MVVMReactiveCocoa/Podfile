@@ -1,0 +1,22 @@
+# Uncomment this line to define a global platform for your project
+
+
+platform :ios, '8.0'
+
+use_frameworks!     #必须添加
+
+target 'MVVMReactiveCocoa' do  #工程名
+
+pod 'ReactiveObjC' #默认导入最新的RAC版本
+
+pod 'MJRefresh'
+
+pod 'MBProgressHUD', '~> 1.0.0'
+
+pod 'YYModel'
+
+pod 'SDWebImage', '~>3.8'
+
+
+
+end

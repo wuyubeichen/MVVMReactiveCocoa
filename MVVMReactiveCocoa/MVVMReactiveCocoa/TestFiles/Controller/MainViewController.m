@@ -24,16 +24,10 @@
     self.view.backgroundColor = [UIColor whiteColor];
     self.navigationController.navigationBar.translucent = NO;
     self.title = @"RAC&&MVVM表视图界面";
-
-    [self.view addSubview:self.tableView];
-    WS(weakSelf);
-    self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
-        [weakSelf.videoViewModel.requestVideoListCommand execute:@{@"headerRefresh":@"1"}];
-    }];
-    self.tableView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
-        [weakSelf.videoViewModel.requestVideoListCommand execute:@{@"headerRefresh":@"0"}];
-    }];
-
+    
+    //设置UI
+    [self setupUI];
+    
     //设置绑定
     [self setupBind];
     
@@ -41,18 +35,37 @@
     [self.tableView.mj_header beginRefreshing];
 }
 
+- (void)dealloc{
+    //测试有没有循环引用...
+}
+
 
 #pragma mark - private Methods
+- (void)setupUI{
+    [self.view addSubview:self.tableView];
+    @weakify(self)
+    self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+        @strongify(self)
+        [self.videoViewModel.requestVideoListCommand execute:@{@"headerRefresh":@"1"}];
+    }];
+    self.tableView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
+        @strongify(self)
+        [self.videoViewModel.requestVideoListCommand execute:@{@"headerRefresh":@"0"}];
+    }];
+}
+
+
 - (void)setupBind{
     self.videoViewModel.currentVC = self;
     self.tableView.dataSource = self.videoViewModel;
     self.tableView.delegate = self.videoViewModel;
     
     //通知方法刷新表视图
-    WS(weakSelf);
+    @weakify(self)
     [[[NSNotificationCenter defaultCenter] rac_addObserverForName:NotificationName_RefreshMainVC object:nil] subscribeNext:^(NSNotification * _Nullable x) {
-        [weakSelf resetRefreshView];
-        [weakSelf.tableView reloadData];
+        @strongify(self)
+        [self resetRefreshView];
+        [self.tableView reloadData];
      }];
 }
 

@@ -28,14 +28,15 @@
 #pragma mark - private Methods
 - (void)setupBind{
     //RACCommand事件
-    WS(weakSelf);
+    @weakify(self)
     //封装网络请求的操作
     _requestVideoListCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal * _Nonnull(id  _Nullable input) {
         return [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+            @strongify(self)
             //请求分页的视频列表数据
             NSDictionary *inputData = (NSDictionary *)input;
             BOOL headerRefresh = [inputData[@"headerRefresh"] boolValue];
-            NSInteger requestPage = headerRefresh ? 0 : weakSelf.currentPage + 1;
+            NSInteger requestPage = headerRefresh ? 0 : self.currentPage + 1;
             NSMutableDictionary *params = [NSMutableDictionary dictionary];
             NSString *paramPage = [NSString stringWithFormat:@"%ld",requestPage];
             [params setObject:paramPage forKey:@"page"];
@@ -46,12 +47,12 @@
                     VideoListDataModel *videoListDataModel = [VideoListDataModel yy_modelWithJSON:data];
                     if(videoListDataModel.videos.count >0){
                         if(requestPage == 0){
-                            weakSelf.currentPage = 0;
-                            [weakSelf.videoModels removeAllObjects];
+                            self.currentPage = 0;
+                            [self.videoModels removeAllObjects];
                         }else{
-                            weakSelf.currentPage = requestPage;
+                            self.currentPage = requestPage;
                         }
-                        [weakSelf.videoModels addObjectsFromArray:videoListDataModel.videos];
+                        [self.videoModels addObjectsFromArray:videoListDataModel.videos];
                     }else{
                         //NSLog(@"");
                     }
@@ -60,7 +61,7 @@
                 //显示提示信息
                 NSString *errorMsg = data[@"errorMsg"];
                 if(errorMsg.length > 0){
-                    [ZSCommonTools showInView:weakSelf.currentVC.view withText:errorMsg];
+                    [ZSCommonTools showInView:self.currentVC.view withText:errorMsg];
                 }
                 //发送请求的数据
                 [subscriber sendNext:data];

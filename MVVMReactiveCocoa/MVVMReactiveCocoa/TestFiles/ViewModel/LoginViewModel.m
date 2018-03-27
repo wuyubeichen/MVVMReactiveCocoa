@@ -29,15 +29,16 @@
 
 #pragma mark - private Methods
 - (void)setupBind{
-    __weak typeof (self) weakSelf = self;
-    
+    @weakify(self);
     //1.判断用户名、密码、登录是否可用的信号
     _validUserNameSignal = [RACObserve(self.accountModel, userName) map:^id _Nullable(id  _Nullable value) {
-        return @([weakSelf isValidForUserName:value]);
+        @strongify(self)
+        return @([self isValidForUserName:value]);
     }];
 
     _validPasswordSignal = [RACObserve(self.accountModel, password) map:^id _Nullable(id  _Nullable value) {
-        return @([weakSelf isValidForPassword:value]);
+        @strongify(self)
+        return @([self isValidForPassword:value]);
     }];
     
     _validLoginBtnSignal =  [RACSignal combineLatest:@[_validUserNameSignal,_validPasswordSignal] reduce:^id (NSNumber *userNameValid,NSNumber *paswordValid){
@@ -64,10 +65,11 @@
     //3.RACCommand事件
     //封装登录网络请求操作
     _loginCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal * _Nonnull(id  _Nullable input) {
+        @strongify(self)
         return [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
             [self.hideFailureLabelSignal sendNext:@"1"];
             //登录网络请求
-            [HttpRequestManager loginInWithUsername:weakSelf.accountModel.userName password:weakSelf.accountModel.password response:^(BOOL success, id data) {
+            [HttpRequestManager loginInWithUsername:self.accountModel.userName password:self.accountModel.password response:^(BOOL success, id data) {
                 if (success) {
                     [self.hideFailureLabelSignal sendNext:@"1"];
                 }else{
@@ -87,11 +89,12 @@
     //监听登录操作产生的数据
     //switchToLatest获取最新发送的信号，只能用于信号中信号
     [_loginCommand.executionSignals.switchToLatest subscribeNext:^(id  _Nullable x) {
+        @strongify(self)
         NSDictionary *loginData = (NSDictionary *)x;
         if ([loginData[@"status"] isEqualToString:@"0"]) {
             NSLog(@"登录成功！");
             MainViewController *firstVC = [[MainViewController alloc] init];
-            [weakSelf.currentVC.navigationController pushViewController:firstVC animated:YES];
+            [self.currentVC.navigationController pushViewController:firstVC animated:YES];
         }else{
         }
     }];
@@ -99,9 +102,10 @@
     //监听登录操作的状态：正在进行或者已经结束
     //默认会监测一次，所以这里使用skip表示跳过第一次信号。
     [[_loginCommand.executing skip:1] subscribeNext:^(NSNumber * _Nullable x) {
+        @strongify(self)
         if ([x isEqual:@(YES)]) {
             //正在执行，显示MBProgressHUD
-            [MBProgressHUD showHUDAddedTo:weakSelf.currentVC.view animated:YES];
+            [MBProgressHUD showHUDAddedTo:self.currentVC.view animated:YES];
         }else{
             //正在执行或者没有执行，隐藏MBProgressHUD
             [MBProgressHUD hideHUDForView:self.currentVC.view animated:YES];

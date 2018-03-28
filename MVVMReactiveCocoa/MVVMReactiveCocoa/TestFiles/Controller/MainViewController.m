@@ -23,7 +23,7 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
     self.navigationController.navigationBar.translucent = NO;
-    self.title = @"RAC&&MVVM表视图界面";
+    self.title = @"RAC&&MVVM";
     
     //设置UI
     [self setupUI];
@@ -44,10 +44,12 @@
 - (void)setupUI{
     [self.view addSubview:self.tableView];
     @weakify(self)
+    //下拉刷新
     self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
         @strongify(self)
         [self.videoViewModel.requestVideoListCommand execute:@{@"headerRefresh":@"1"}];
     }];
+    //下拉加载更多
     self.tableView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
         @strongify(self)
         [self.videoViewModel.requestVideoListCommand execute:@{@"headerRefresh":@"0"}];

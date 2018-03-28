@@ -8,7 +8,7 @@
 
 #import "HttpRequestManager.h"
 #import "ZSCommonTools.h"
-const float delaySeconds = 1.5f;
+const float delaySeconds = 2.0f;
 
 @implementation HttpRequestManager
 

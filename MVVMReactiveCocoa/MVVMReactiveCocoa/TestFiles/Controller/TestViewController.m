@@ -29,7 +29,7 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
     self.navigationController.navigationBar.translucent = NO;
-    self.title = @"RACDemo05";
+    self.title = @"登录";
     
     [self setupBind];
  }
@@ -53,20 +53,21 @@
    
 
     //处理响应事件：
-    __weak typeof (self) weakSelf = self;
+    @weakify(self);
     //1.点击页面，隐藏键盘
     [self.tapGesture.rac_gestureSignal subscribeNext:^(__kindof UIGestureRecognizer * _Nullable x) {
-        [weakSelf.view endEditing:YES];
+        @strongify(self);
+        [self.view endEditing:YES];
     }];
     
     //2.点击登录按钮，执行网络请求
     [[self.loginBtn rac_signalForControlEvents:UIControlEventTouchUpInside] subscribeNext:^(__kindof UIControl * _Nullable x) {
+        @strongify(self);
         //执行登录的网路请求操作
-        [weakSelf.loginViewModel.loginCommand execute:nil];
+        [self.loginViewModel.loginCommand execute:nil];
     }];
     
 }
-
 
 
 #pragma mark - Getter && Setter

@@ -11,11 +11,11 @@
 5. 点击登录成功之后，跳转进入下一界面。
 
 #### 分页表视图界面：
-1. 结合MVVM架构模式，在ViewModel中处理分页加载数据和表视图的代理方法
+1. 结合MVVM架构模式，在ViewModel中处理分页加载数据和表视图的代理方法。
 2. 处理ViewModel与控制器对象之间的各种交互。
 
 # 二、效果图：
-
+![image](https://github.com/DreamcoffeeZS/MVVMReactiveCocoa/blob/master/Screenshots/RACAndMVVM.jpg)
 
 
 

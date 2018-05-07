@@ -21,7 +21,7 @@
 登录页密码：使用输入框内的默认提示即可
 
 
-# 二、效果图：
+# 三、效果图：
 ![image](https://github.com/DreamcoffeeZS/MVVMReactiveCocoa/blob/master/Screenshots/RACAndMVVM.jpg)
 
 
